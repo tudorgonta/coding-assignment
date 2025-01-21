@@ -15,4 +15,5 @@ export default {
     },
   },
   plugins: [],
+  darkMode: 'class', // Enable class-based dark mode
 } satisfies Config;

@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import GameServerCard from "./components/GameServerCard";
+import DarkModeToggle from "./components/DarkModeToggle";
+import { GameServer } from "./interfaces/interfaces";
 
 /*
   Welcome to the simplegamehosting coding assignment!
@@ -18,7 +21,7 @@ import { useEffect, useState } from "react";
 */
 
 export default function Home() {
-  const [serverData, setServerData] = useState(null);
+  const [serverData, setServerData] = useState<GameServer[]>([{ id: 0, name: "", game: "", players: "", status: "offline", version: "", type: "", region: "", mods: [] }]);
   // you can update this fetching code if required but it's not necessary for the assignment.
   useEffect(() => {
     const fetchServerData = async () => {
@@ -34,20 +37,34 @@ export default function Home() {
     fetchServerData();
   }, []);
 
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      {/* main can be deleted and replaced with your own cards */}
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1 className="text-2xl font-bold">Minecraft Server List</h1>
-        <p className="text-gray-600">
-          Below is the JSON data fetched from <code>/api/mock</code>. Use it to
-          build the UI.
+  if (!serverData || serverData.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+        <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
+          No servers available.
         </p>
-        <pre className="bg-gray-200 text-gray-800 p-4 rounded-lg w-full overflow-auto max-w-4xl text-sm">
-          {serverData ? JSON.stringify(serverData, null, 2) : "Loading data..."}
-        </pre>
-      </main>
-      {/* main can be deleted and replaced with your own cards */}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+      <div className="max-w-5xl mx-auto p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Game Server Dashboard
+          </h1>
+          <DarkModeToggle />
+        </div>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+          {serverData.map((server) => (
+            <GameServerCard
+              key={server.id}
+              server={server}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
